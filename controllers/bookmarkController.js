@@ -2,6 +2,20 @@ const express = require("express");
 const bookmarks = express.Router();
 const bookmarkArray = require("../models/bookmarksArray.js");
 
+// Custom Middleware
+const validateURL = (req, res, next) => {
+  if (
+    req.body.url.substring(0, 7) === "http://" ||
+    req.body.url.substring(0, 8) === "https://"
+  ) {
+    return next();
+  } else {
+    res
+      .status(400)
+      .send(`Oops, you forgot to start your url with http:// or https://`);
+  }
+};
+
 // INDEX
 bookmarks.get("/", (req, res) => {
   res.status(200).json(bookmarkArray);
@@ -23,7 +37,7 @@ bookmarks.put("/:arrayIndex", (req, res) => {
 });
 
 // CREATE
-bookmarks.post("/", (req, res) => {
+bookmarks.post("/", validateURL, (req, res) => {
   bookmarkArray.push(req.body);
   res.json(bookmarkArray[bookmarkArray.length - 1]);
 });
