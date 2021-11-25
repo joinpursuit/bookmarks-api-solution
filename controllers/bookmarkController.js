@@ -17,15 +17,16 @@ bookmarks.get("/:arrayIndex", (req, res) => {
 });
 
 // UPDATE
-bookmarks.put("/:arrayIndex", (req, res) => {
+bookmarks.put("/:arrayIndex", async (req, res) => {
   bookmarkArray[req.params.arrayIndex] = req.body;
   res.status(200).json(bookmarkArray[req.params.arrayIndex]);
 });
 
 // CREATE
-bookmarks.post("/", (req, res) => {
-  bookmarkArray.push(req.body);
-  res.json(bookmarkArray[bookmarkArray.length - 1]);
+bookmarks.post("/", async (req, res) => {
+  // trying to solve async issue with react front end
+  const updatedArray = await bookmarkArray.push(req.body);
+  res.json(bookmarkArray[updatedArray - 1]);
 });
 
 // DELETE
